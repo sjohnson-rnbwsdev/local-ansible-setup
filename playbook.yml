@@ -1,0 +1,9 @@
+---
+- name: "Set up sj dev machine"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: "Create .vimrc file in sj user $HOME"
+      template:
+        src: "templates/vimrc.j2"
+        dest: "/home/sj/.vimrc"
