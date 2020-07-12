@@ -16,3 +16,12 @@
       template:
         src: "templates/zshrc.j2"
         dest: "/home/sj/.zshrc"
+    - name: "Install useful packages"
+      become: yes
+      package:
+        name:
+          - jq
+          - vlc
+          - k4dirstat
+          - discord
+        state: installed
