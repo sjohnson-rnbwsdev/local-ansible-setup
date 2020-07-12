@@ -7,3 +7,12 @@
       template:
         src: "templates/vimrc.j2"
         dest: "/home/sj/.vimrc"
+    - name: "Get powerlevel10k from Github"
+      git:
+        dest: "/home/sj/powerlevel10k"
+        depth: 1
+        repo: "https://github.com/romkatv/powerlevel10k.git"
+    - name: "Create .zshrc file in sj user $HOME"
+      template:
+        src: "templates/zshrc.j2"
+        dest: "/home/sj/.zshrc"
