@@ -3,25 +3,64 @@
   hosts: localhost
   connection: local
   tasks:
+
     - name: "Create .vimrc file in sj user $HOME"
       template:
         src: "templates/vimrc.j2"
         dest: "/home/sj/.vimrc"
-    - name: "Get powerlevel10k from Github"
-      git:
-        dest: "/home/sj/powerlevel10k"
-        depth: 1
-        repo: "https://github.com/romkatv/powerlevel10k.git"
+
     - name: "Create .zshrc file in sj user $HOME"
       template:
         src: "templates/zshrc.j2"
         dest: "/home/sj/.zshrc"
-    - name: "Install useful packages"
-      become: yes
+    
+    - name: "Create .gitconfig file in sj user $HOME"
+      template: 
+        src: "templates/gitconfig.j2"
+        dest: "/home/sj/.gitconfig"
+
+    - name: "Create .p10k.zsh in sj user $HOME"
+      copy:
+        content: "files/p10k.zsh.j2"
+        dest: "/home/sj/.p10k.zsh"
+
+    - name: Check if .oh-my-zsh exists
+      stat:
+        path: ~/.oh-my-zsh
+      register: stat_oh_my_zsh_result
+
+    - name: "Cloning  oh-my-zsh"
+      git:
+        repo: https://github.com/robbyrussell/oh-my-zsh
+        dest: ~/.oh-my-zsh
+      when: not stat_oh_my_zsh_result.stat.exists
+    
+    - name: "Get powerlevel10k from Github"
+      git:
+        dest: "/home/sj/.oh-my-zsh/themes/powerlevel10k"
+        depth: 1
+        repo: "https://github.com/romkatv/powerlevel10k.git"
+
+    - name: "Install useful apt packages"
+      become: true
       package:
         name:
           - jq
           - vlc
           - k4dirstat
-          - discord
-        state: installed
+          - git
+          - nmap
+          - zsh
+        state: present
+
+    - name: "Install useful snap packages"
+      become: true
+      snap:
+        name:
+          - code
+        classic: true
+        
+    - name: "chsh to zsh"
+      user:
+        shell: /usr/bin/zsh
+        name: sj
